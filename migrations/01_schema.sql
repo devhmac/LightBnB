@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS
-DROP TABLE IF EXISTS
-DROP TABLE IF EXISTS
-DROP TABLE IF EXISTS
+DROP TABLE IF EXISTS users
+DROP TABLE IF EXISTS properties
+DROP TABLE IF EXISTS reservations
+DROP TABLE IF EXISTS property_reviews
 
 
 CREATE TABLE users (
@@ -21,11 +21,11 @@ CREATE TABLE properties (
   parking_spaces INTEGER,
   number_of_bathrooms INTEGER,
   number_of_bedrooms INTEGER,
-  country VARCHAR(100) NOT NULL,
+  country VARCHAR(255) NOT NULL,
   street VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   PROVINCE VARCHAR(255) NOT NULL,
-  post_code VARCHAR(50) NOT NULL,
+  post_code VARCHAR(255) NOT NULL,
   ACTIVE BOOLEAN
 )
 CREATE TABLE reservations (
@@ -36,5 +36,10 @@ CREATE TABLE reservations (
   guest_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 )
 CREATE TABLE property_reviews (
-  
+  id SERIAL PRIMARY KEY,
+  guest_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+  reservation_id INTEGER NOT NULL REFERENCES reservations(id) ON DELETE CASCADE,
+  rating SMALLINT NOT NULL,
+  message TEXT
 )

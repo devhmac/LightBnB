@@ -17,17 +17,6 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
-  // let user;
-  // for (const userId in users) {
-  //   user = users[userId];
-  //   if (user.email.toLowerCase() === email.toLowerCase()) {
-  //     break;
-  //   } else {
-  //     user = null;
-  //   }
-  // }
-  // return Promise.resolve(user);
-
   return pool.query(`
   SELECT * FROM users
   WHERE email = $1
@@ -49,7 +38,18 @@ exports.getUserWithEmail = getUserWithEmail;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  return Promise.resolve(users[id]);
+  return pool.query(`
+  SELECT * FROM users
+  WHERE id = $1
+  `, [`${id}`])
+    .then(res => {
+      console.log(res.rows)
+      if (res.rows.length === 0) return Promise.resolve(null);
+      return Promise.resolve(res.rows[0]);
+    })
+    .catch((err) => {
+      console.log('there was an error ', err)
+    });
 }
 exports.getUserWithId = getUserWithId;
 

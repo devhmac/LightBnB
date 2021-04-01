@@ -37,8 +37,10 @@ const getUserWithEmail = function(email) {
       if (res.rows.length === 0) return Promise.resolve(null);
       return Promise.resolve(res.rows[0]);
     })
-
-}
+    .catch((err) => {
+      console.log('there was an error ', err)
+    });
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**

@@ -24,9 +24,6 @@ const getUserWithEmail = function(email) {
     .then(res => {
       if (res.rows.length === 0) return Promise.resolve(null);
       return Promise.resolve(res.rows[0]);
-    })
-    .catch((err) => {
-      console.log('there was an error ', err)
     });
 };
 exports.getUserWithEmail = getUserWithEmail;
@@ -44,9 +41,6 @@ const getUserWithId = function(id) {
     .then(res => {
       if (res.rows.length === 0) return Promise.resolve(null);
       return Promise.resolve(res.rows[0]);
-    })
-    .catch((err) => {
-      console.log('there was an error ', err)
     });
 }
 exports.getUserWithId = getUserWithId;
@@ -66,7 +60,6 @@ const addUser = function(user) {
     .then((res) => {
       return Promise.resolve(res.rows)
     })
-    .catch(err => console.log('There was an error ', err))
 }
 exports.addUser = addUser;
 
@@ -113,7 +106,8 @@ const getAllProperties = function(options, limit = 10) {
   // city param
   if (options.city) {
     queryParams.push(`%${options.city}%`);
-    queryString += `WHERE city LIKE $${queryParams.length} `;
+    queryString += `WHERE city LIKE $${queryParams.length} 
+    `;
   }
 
   //owner id param
@@ -134,26 +128,36 @@ const getAllProperties = function(options, limit = 10) {
     queryParams.push(options.minimum_price_per_night);
     if (!(options.city || options.owner_id)) {
       queryString += `WHERE`;
-    }
-    if (options.city || options.owner_id) {
+    } else {
       queryString += `AND`;
     }
-    queryString += ` cost_per_night >= $${queryParams.length}`;
+    queryString += ` cost_per_night >= $${queryParams.length}
+    `;
   };
 
   // max price
   if (options.maximum_price_per_night) {
-    queryParams.push(options.minimum_price_per_night);
+    queryParams.push(options.maximum_price_per_night);
     if (!(options.city || options.owner_id || options.minimum_price_per_night)) {
       queryString += `WHERE`;
-    }
-    if (options.city || options.owner_id) {
+    } else {
       queryString += `AND`;
     }
-    queryString += ` cost_per_night <= $${queryParams.length}`;
+    queryString += ` cost_per_night <= $${queryParams.length}
+    `;
   };
 
-
+  // minimum_rating
+  if (options.minimum_rating) {
+    queryParams.push(options.minimum_rating);
+    if (!(options.city || options.owner_id || options.minimum_price_per_night || options.maximum_price_per_night)) {
+      queryString += `WHERE`;
+    } else {
+      queryString += `AND`;
+    }
+    queryString += ` rating >= $${queryParams.length}
+    `;
+  };
 
   // 4
   queryParams.push(limit);
